@@ -2,6 +2,7 @@
 name: api-contract-guardian
 description: Проверяет валидацию API запросов/ответов, генерирует схемы и минимизирует баги на стыках интеграций
 allowed-tools: Read, Grep, Glob, Agent, WebSearch, Edit, Write
+model: sonnet
 argument-hint: "[модуль, API интеграция или 'all' для аудита всех]"
 ---
 

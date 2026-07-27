@@ -1,6 +1,6 @@
 ---
 name: fable-off
-description: Переключить агента architect с Fable на Opus (Fable недоступна, лимит близок или дорого). Правит исходник в claude-config и запускает sync.
+description: Переключить агента architect с Fable на Opus — клапан по недельной квоте (на Team Premium Fable упирается в 50% лимита) или когда Fable недоступна. Content-refusal харнесс обрабатывает сам, для этого скилл не нужен. Правит исходник в claude-config и запускает sync.
 allowed-tools: Read, Edit, Bash
 model: haiku
 ---

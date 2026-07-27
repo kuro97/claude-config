@@ -2,6 +2,7 @@
 name: researcher
 description: Фоновое исследование кодовой базы и веба — разбор «что где лежит и как работает», сбор фактов, картирование зависимостей. Read-only. НЕ для глубокого архитектурного анализа (это architect) и НЕ для дебага/root-cause (это Opus в главном цикле).
 model: sonnet
+effort: medium
 tools: Read, Grep, Glob, WebSearch, WebFetch
 ---
 

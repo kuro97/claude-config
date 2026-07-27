@@ -1,139 +1,46 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: Use when about to claim work is complete, fixed, or passing without having run the proving command in this same message - the claim must ship together with the command output that proves it
 ---
 
 # Verification Before Completion
 
-## Overview
+**Core principle:** claim and evidence ship together, in the same message.
 
-Claiming work is complete without verification is dishonesty, not efficiency.
+## The Gate
 
-**Core principle:** Evidence before claims, always.
+Before stating that something passes / builds / is fixed:
 
-**Violating the letter of this rule is violating the spirit of this rule.**
+1. Name the command that proves it
+2. Run it fresh and in full
+3. Read the output and the exit code
+4. State the claim **with** that output — or state the actual status instead
 
-## The Iron Law
+If the proving command hasn't run in this message, the claim doesn't ship.
 
-```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
+## What proves what
 
-If you haven't run the verification command in this message, you cannot claim it passes.
+| Claim | Proof | Not proof |
+|-------|-------|-----------|
+| Tests pass | test command output, 0 failures | a previous run, "should pass" |
+| Linter clean | linter output, 0 errors | partial check |
+| Build succeeds | build command, exit 0 | linter passed |
+| Bug fixed | original symptom retested, passes | code changed |
+| Regression test works | red-green cycle run | test passes once |
+| Requirements met | line-by-line checklist against the spec | tests passing |
+| Subagent reported DONE | one integration run in the main loop | the subagent's summary |
 
-## The Gate Function
+## Reporting
 
-```
-BEFORE claiming any status or expressing satisfaction:
+- Tests failed → say so, with the output.
+- Step skipped → say that.
+- Done and proved → state it plainly, no hedging, no "should" / "probably" / "seems to".
 
-1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
-3. READ: Full output, check exit code, count failures
-4. VERIFY: Does output confirm the claim?
-   - If NO: State actual status with evidence
-   - If YES: State claim WITH evidence
-5. ONLY THEN: Make the claim
+## Scope — where this does NOT apply
 
-Skip any step = lying, not verifying
-```
+This is a gate on **claims**, not a mandate to re-do work:
 
-## Common Failures
-
-| Claim | Requires | Not Sufficient |
-|-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
-| Build succeeds | Build command: exit 0 | Linter passing, logs look good |
-| Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
-| Requirements met | Line-by-line checklist | Tests passing |
-
-## Red Flags - STOP
-
-- Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
-- About to commit/push/PR without verification
-- Trusting agent success reports
-- Relying on partial verification
-- Thinking "just this once"
-- Tired and wanting work over
-- **ANY wording implying success without having run verification**
-
-## Rationalization Prevention
-
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | RUN the verification |
-| "I'm confident" | Confidence ≠ evidence |
-| "Just this once" | No exceptions |
-| "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
-
-## Key Patterns
-
-**Tests:**
-```
-✅ [Run test command] [See: 34/34 pass] "All tests pass"
-❌ "Should pass now" / "Looks correct"
-```
-
-**Regression tests (TDD Red-Green):**
-```
-✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
-❌ "I've written a regression test" (without red-green verification)
-```
-
-**Build:**
-```
-✅ [Run build] [See: exit 0] "Build passes"
-❌ "Linter passed" (linter doesn't check compilation)
-```
-
-**Requirements:**
-```
-✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
-❌ "Tests pass, phase complete"
-```
-
-**Agent delegation:**
-```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust agent report
-```
-
-## Why This Matters
-
-From 24 failure memories:
-- your human partner said "I don't believe you" - trust broken
-- Undefined functions shipped - would crash
-- Missing requirements shipped - incomplete features
-- Time wasted on false completion → redirect → rework
-- Violates: "Honesty is a core value. If you lie, you'll be replaced."
-
-## When To Apply
-
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
-
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
-
-## The Bottom Line
-
-**No shortcuts for verification.**
-
-Run the command. Read the output. THEN claim the result.
-
-This is non-negotiable.
+- Don't re-run a command that already ran in this message just to "be sure".
+- Don't spawn a subagent to verify — verification lives in the main loop.
+- Don't re-audit statements that were already accurate.
+- Work that produced no verifiable claim needs no verification pass.

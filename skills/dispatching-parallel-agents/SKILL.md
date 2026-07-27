@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies
+description: Use when facing 3+ independent problem domains, each substantially larger than a few tool calls, that can be worked without shared state or sequential dependencies
 ---
 
 # Dispatching Parallel Agents
@@ -33,16 +33,20 @@ digraph when_to_use {
 }
 ```
 
-**Use when:**
-- 3+ test files failing with different root causes
-- Multiple subsystems broken independently
-- Each problem can be understood without context from others
+**Use when ALL of these hold:**
+- 3+ independent problem domains (test files with different root causes, unrelated subsystems)
+- Each domain is substantially bigger than a few tool calls
+- Each problem can be understood without context from the others
 - No shared state between investigations
 
 **Don't use when:**
 - Failures are related (fix one might fix others)
+- You could finish the work yourself in a handful of tool calls — dispatching costs more than doing it
+- The goal is verification or double-checking — that belongs in the main loop
 - Need to understand full system state
 - Agents would interfere with each other
+
+> Cap: never more than 20 parallel agents unless the user explicitly asks. Prefer one agent over several when one can carry the task.
 
 ## The Pattern
 
@@ -164,13 +168,13 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 3. **Independence** - Agents don't interfere with each other
 4. **Speed** - 3 problems solved in time of 1
 
-## Verification
+## After agents return
 
-After agents return:
-1. **Review each summary** - Understand what changed
-2. **Check for conflicts** - Did agents edit same code?
-3. **Run full suite** - Verify all fixes work together
-4. **Spot check** - Agents can make systematic errors
+1. **Read each summary** — understand what changed
+2. **Check for conflicts** — did agents edit the same code?
+3. **Run the full suite once** — that single run is the integration check
+
+Commit to the delegation: don't re-derive an agent's findings or redo its work. One integration run covers all of them.
 
 ## Real-World Impact
 
