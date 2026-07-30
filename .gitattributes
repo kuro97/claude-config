@@ -1,0 +1,11 @@
+# core.autocrlf=true на этой машине: без явного eol=lf git превратит LF в CRLF
+# при любом checkout/clone, и bash упадёт с «bad interpreter: /bin/bash^M».
+# Молча — хук или statusline просто перестанут работать, как это уже было
+# с jq-версией credentials-хука. Держать LF принудительно.
+*.sh text eol=lf
+
+# .ps1 читается PowerShell'ем с любыми концами строк, но BOM в notify.ps1
+# обязателен — иначе кириллица в MessageBox превратится в mojibake.
+*.ps1 text eol=crlf
+
+*.md text
