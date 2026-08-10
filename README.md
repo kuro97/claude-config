@@ -26,6 +26,7 @@ claude-config/
     ├── review/                         # Ревью перед деплоем
     ├── docs/                           # Генерация документации
     ├── report/                         # Итоговые отчёты
+    ├── task-status/                    # Статус задачи чек-листом: готово / не проверено / дальше по порядку / блокеры
     ├── test/                           # Написание тестов
     ├── tz/                             # Создание технического задания
     ├── simplify-this/                  # Радикальное упрощение спек/архитектур (assess/proposal/rewrite)
@@ -71,7 +72,7 @@ claude-config/
 - **Две оси**: модель × **effort**. Глобальный effort — `high`; `xhigh` включать под кодинг и агентные задачи (`/effort xhigh`), не держать глобально.
 - **Субагенты** (`agents/`) несут модель и effort в frontmatter: `architect`=Fable 5/xhigh (только системная архитектура — единственная точка Fable), `researcher`=Sonnet 5/medium, `mechanic`=Haiku 4.5/low.
 - **Главный цикл** — Opus 5 по умолчанию; всё, чего нет в карте → Opus 5.
-- **Скиллы**: worker-скиллы низкой ставки пиннятся `model: sonnet` (docs, report, test, deep-research, dependency-optimizer, cicd-quick-setup, error-handling-standardizer, context-budget, skill-stocktake, research, api-contract-guardian); `review`→opus; `audit-server`→`claude-opus-4-8`; `fable-off/on`→haiku. Оркестраторы (`build`, `plan`, `spec-to-code`, `subagent-driven-development`, `dispatching-parallel-agents`) и дисциплины (`systematic-debugging`, TDD, verification) без пина — едут на дефолтном Opus 5.
+- **Скиллы**: worker-скиллы низкой ставки пиннятся `model: sonnet` (docs, report, test, deep-research, dependency-optimizer, cicd-quick-setup, error-handling-standardizer, context-budget, skill-stocktake, research, api-contract-guardian); `review`→opus; `audit-server`→`claude-opus-4-8`; `fable-off/on`→haiku. Оркестраторы (`build`, `plan`, `spec-to-code`, `subagent-driven-development`, `dispatching-parallel-agents`) и дисциплины (`systematic-debugging`, TDD, verification, `task-status`) без пина — едут на дефолтном Opus 5. У `task-status` пин был бы вреден отдельно: `model` в скилле действует до конца turn'а, а сверка доказательств «сделано / не проверено» — не то место, где экономят.
 - **Классификаторы**: Opus 5 и Fable 5 несут cyber/bio-фильтры, харнесс сам делает content-fallback (Fable cyber→Opus 4.8, Fable bio→Opus 5, Opus 5 cyber→Opus 4.8). Фолбэк переводит всю сессию — на pentest/аудитах стартовать `/model claude-opus-4-8` заранее.
 - **Фолбэк Fable→Opus**: refusal ловит харнесс сам; `/fable-off` остаётся клапаном по недельной квоте (Fable capped 50% на Team Premium), возврат — `/fable-on`. Правят исходник `agents/architect.md` + запускают `sync.sh`.
 - **statusline** (опц.): показывает текущую модель сессии + режим architect + лимит 5h. Включить — прописать `statusLine` в `~/.claude/settings.json` (пример — в шапке `statusline/statusline.sh`).
