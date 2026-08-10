@@ -13,6 +13,9 @@ claude-config/
 │   ├── architect.md     #   Fable 5 / xhigh — системная архитектура (ЕДИНСТВЕННАЯ точка Fable), read-only
 │   ├── researcher.md    #   Sonnet 5 / medium — исследование кодовой базы/веба, read-only
 │   └── mechanic.md      #   Haiku 4.5 / low — механика: grep/поиск/переименования/форматирование
+├── hooks/               # Хуки Claude Code (НЕ синхронизируются — путь прописан в settings.json)
+│   ├── block-credentials.sh  #   PreToolUse(Edit|Write): блок правки .env/ключей/config.py — вторая линия к правилу в CLAUDE.md
+│   └── notify.ps1       #   Уведомления
 ├── statusline/
 │   └── statusline.sh    # Статус-строка: модель сессии + режим architect + лимит 5h (jq-free, вкл. вручную)
 └── skills/
@@ -107,6 +110,7 @@ bash sync.sh
 - **Стек-специфичные скиллы** — `golang-patterns`, `golang-testing`, `dart-flutter-patterns`, `flutter-dart-code-review` живут локально в проекте (vault) и в git не отправляются
 - **`settings.json`** — permissions и хуки специфичны для каждой машины
 - **`statusline/`** — не копируется; статус-строка запускается напрямую из claude-config (путь прописан в `settings.json`). `statusline.sh` — jq-free (jq в Git Bash на Windows нет)
+- **`hooks/`** — не копируется по той же схеме: `settings.json` ссылается на скрипт прямо в claude-config, поэтому **рабочее дерево и есть живой хук** — незакоммиченная правка уже действует. На новой машине хук молча не заработает, пока путь не прописан в `settings.json`. `block-credentials.sh` тоже jq-free: версия на `jq` получала пустую строку и пропускала всё через `exit 0`
 
 ## Правила
 

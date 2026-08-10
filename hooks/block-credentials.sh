@@ -27,21 +27,48 @@ if [ -z "$path" ]; then
   exit 0
 fi
 
-lower=$(printf '%s' "$path" | tr '[:upper:]' '[:lower:]')
+# Разделитель приводим к прямому слэшу: из JSON путь приходит как
+# d:\\proj\\tests\\x.py, и любая маска со слэшем (*/tests/*, */.env*)
+# по нему не срабатывает. Без этого исключения ниже молча не работали бы
+# на Windows — а это единственная система, где хук и используется.
+lower=$(printf '%s' "$path" | tr '[:upper:]' '[:lower:]' | tr '\\' '/')
 
 # Шаблоны без секретов — править можно.
 case "$lower" in
   *.env.example*|*.env.sample*|*.env.template*|*.env.dist*) exit 0 ;;
 esac
 
+block() {
+  echo "BLOCKED: $path — файл с credentials, правка запрещена (правило в CLAUDE.md)." >&2
+  echo "Если правка действительно нужна — сделай её сам, руками." >&2
+  exit 2
+}
+
+# Секрет всегда, где бы ни лежал — включая тестовые каталоги. Раньше исключение
+# для тестов стояло выше блок-листа и открывало tests/.env и fixtures/*.pem:
+# именно те файлы, ради которых хук и написан. Фикстуры этих типов почти не
+# встречаются, а .env и приватные ключи внутри tests/ — встречаются, и они
+# настоящие. Проверено 2026-08-10.
 case "$lower" in
-  *.env|*.env.*|*.env\ *|*/.env*|*keys.json*|*credentials.json*|*secrets.json*|\
-  *config.php|*config.py|*service-account*.json|*token.json|\
-  *.pem|*.p12|*.pfx|*id_rsa*|*id_ed25519*|*.npmrc|*.pgpass|*.my.cnf)
-    echo "BLOCKED: $path — файл с credentials, правка запрещена (правило в CLAUDE.md)." >&2
-    echo "Если правка действительно нужна — сделай её сам, руками." >&2
-    exit 2
-    ;;
+  *.env|*.env.*|*.env\ *|*/.env*|\
+  *.pem|*.p12|*.pfx|*id_rsa*|*id_ed25519*|*.pgpass|*.npmrc|*.my.cnf)
+    block ;;
+esac
+
+# Ниже — маски, которые ловят по ИМЕНИ и потому дают ложные срабатывания:
+# *config.py поймала tests/test_aiplus_config.py, и правка теста упёрлась
+# в запрет (aiplus-AI-digest, 2026-08-04). Только для них исключение на тесты:
+# json-фикстуры с выдуманными токенами живут в tests/ и fixtures/ — это норма.
+case "$lower" in
+  */tests/*|*/test/*|*/test_*|*_test.py|*_test.go|*_test.js|\
+  *.test.*|*.spec.*|*/spec/*|*/__tests__/*|*/fixtures/*)
+    exit 0 ;;
+esac
+
+case "$lower" in
+  *keys.json*|*credentials.json*|*secrets.json*|\
+  *service-account*.json|*token.json|*config.php|*config.py)
+    block ;;
 esac
 
 exit 0
