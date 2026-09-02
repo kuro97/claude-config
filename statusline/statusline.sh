@@ -9,7 +9,7 @@
 input=$(cat)
 
 # Режим architect из синкнутого агента (единая точка Fable)
-arch_file="/c/Users/umidi/.claude/agents/architect.md"
+arch_file="$HOME/.claude/agents/architect.md"
 arch_model=$(grep -m1 '^model:' "$arch_file" 2>/dev/null | awk '{print $2}')
 
 # Модель текущей сессии: model.display_name (единственный display_name в JSON statusline)
