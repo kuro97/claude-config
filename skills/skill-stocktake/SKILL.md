@@ -12,10 +12,12 @@ argument-hint: "[пусто — quick scan изменённого | 'full' — �
 
 ## Какие папки сканировать
 
+Сначала определи корень текущего проекта: ближайший родительский каталог с `.git` или проектным `CLAUDE.md`. Ниже он обозначен как `<project_root>`.
+
 | Путь | Что это |
 |------|---------|
-| `C:\Users\umidi\.claude\skills\` | Глобальные скиллы (все проекты) |
-| `d:\claude\aiplus_IT\aiplus_vault\shared_claude\skills\` | Проектные скиллы AiPlus |
+| `$HOME/.claude/skills/` | Глобальные скиллы (все проекты) |
+| `<project_root>/.claude/skills/` | Скиллы текущего проекта |
 
 В начале фазы 1 явно перечисли, какие папки нашёл и сколько в них скиллов. Папка `skill-stocktake` саму себя в оценку **не включает**.
 
@@ -26,7 +28,7 @@ argument-hint: "[пусто — quick scan изменённого | 'full' — �
 | Quick scan | `results.json` существует и аргумент пустой | 5–10 мин |
 | Full | `results.json` нет, или аргумент `full` | 20–30 мин |
 
-Кэш: `C:\Users\umidi\.claude\skills\skill-stocktake\results.json`
+Кэш: `$HOME/.claude/skills/skill-stocktake/results.json`
 
 ## Quick scan
 
@@ -48,8 +50,8 @@ argument-hint: "[пусто — quick scan изменённого | 'full' — �
 
 ```
 Сканирую:
-  ✓ C:\Users\umidi\.claude\skills\                              (24 скилла)
-  ✓ ...\aiplus_vault\shared_claude\skills\                      (13 скиллов)
+  ✓ $HOME/.claude/skills/                           (24 скилла)
+  ✓ <project_root>/.claude/skills/                  (13 скиллов)
 ```
 
 | Скилл | Строк | Описание (из frontmatter) |
@@ -107,7 +109,7 @@ argument-hint: "[пусто — quick scan изменённого | 'full' — �
 
 ## Схема results.json
 
-`evaluated_at` — фактическое UTC-время завершения. Получить через PowerShell: `(Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")`. Не использовать дату без времени.
+`evaluated_at` — фактическое UTC-время завершения. Получить через `date -u +"%Y-%m-%dT%H:%M:%SZ"`. Не использовать дату без времени.
 
 ```json
 {
@@ -116,7 +118,7 @@ argument-hint: "[пусто — quick scan изменённого | 'full' — �
   "batch_progress": { "total": 37, "evaluated": 37, "status": "completed" },
   "skills": {
     "skill-name": {
-      "path": "C:\\Users\\umidi\\.claude\\skills\\skill-name\\SKILL.md",
+      "path": "$HOME/.claude/skills/skill-name/SKILL.md",
       "verdict": "Keep",
       "reason": "Конкретное, применимое, уникальная польза для X",
       "content_hash": "первые ~40 символов тела после frontmatter"

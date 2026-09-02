@@ -12,21 +12,23 @@ Claude в начале каждой сессии подгружает CLAUDE.md,
 
 ## Что сканировать
 
+Сначала определи корень текущего проекта: ближайший родительский каталог с `.git` или проектным `CLAUDE.md`. Ниже он обозначен как `<project_root>`.
+
 **Цепочка CLAUDE.md**
-- `C:\Users\umidi\.claude\CLAUDE.md` (глобальный)
-- `d:\claude\aiplus_IT\.claude\CLAUDE.md` (проектный)
-- `d:\claude\aiplus_IT\aiplus_vault\shared_claude\rules\*.md` (грузятся как правила проекта)
+- `$HOME/.claude/CLAUDE.md` (глобальный)
+- `<project_root>/CLAUDE.md` и `<project_root>/.claude/CLAUDE.md` (проектные, если существуют)
+- `<project_root>/.claude/rules/*.md` (грузятся как правила проекта)
 - Считай токены каждого, флаг: суммарно >300 строк.
 
 **MEMORY.md**
-- `C:\Users\umidi\.claude\projects\d--claude-aiplus-IT\memory\MEMORY.md`
+- `$HOME/.claude/projects/<идентификатор-текущего-проекта>/memory/MEMORY.md` (найди каталог, соответствующий `<project_root>`)
 - Грузится каждую сессию. Флаг: >100 строк.
 
-**Скиллы** (`SKILL.md` в обеих папках — глобальной и `shared_claude\skills\`)
+**Скиллы** (`SKILL.md` в `$HOME/.claude/skills/` и `<project_root>/.claude/skills/`)
 - В контекст при старте грузится **только frontmatter (`description`)** каждого скилла, не тело. Считай длину description.
 - Флаг: description >30 слов (раздут — грузится всегда), тело >400 строк (тяжёлый при вызове).
 
-**MCP-серверы** (`d:\claude\aiplus_IT\aiplus_vault\shared_claude\mcp.json` + активные)
+**MCP-серверы** (`<project_root>/.mcp.json`, `<project_root>/.claude/mcp.json`, если существуют, + активные)
 - Посчитай серверы и общее число тулов. Схема тула ≈ 500 токенов.
 - В этом сетапе: Trello (много тулов), Figma (очень много), Tempo. Флаг: сервер с >20 тулов, сервер-обёртка над CLI (gh, git, supabase).
 

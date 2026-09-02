@@ -121,7 +121,7 @@ description: Полный TDD-пайплайн от ТЗ до зелёных т�
 ## Пример использования
 
 ```
-Пользователь: /spec-to-code D:/claude/aiplus_docs/auth_jwt_tz.md
+Пользователь: /spec-to-code ./docs/auth_jwt_tz.md
 
 Claude:
 Этап 0: стек Go, команда тестов: make run-tests, тестовый фреймворк testing.

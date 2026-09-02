@@ -19,16 +19,19 @@ argument-hint: "[пусто]"
 
 ## Куда смотрят правила
 
-Существующие правила (читать целиком — они небольшие):
-- `d:\claude\aiplus_IT\aiplus_vault\shared_claude\rules\*.md` (comments.md, commit.md, pr-size.md, using-aiplus.md и др.)
-- `C:\Users\umidi\.claude\CLAUDE.md` — глобальные правила в свободной форме (секции «Жёсткие правила», «Автоматические триггеры»).
+Сначала определи корень текущего проекта: ближайший родительский каталог с `.git` или проектным `CLAUDE.md`. Ниже он обозначен как `<project_root>`.
 
-Новые правила создавать в `shared_claude\rules\` (проектные, общие для AiPlus). Глобальные привычки уровня поведения — предлагать в CLAUDE.md.
+Существующие правила (читать целиком — они небольшие):
+- `<project_root>/.claude/rules/*.md` (comments.md, commit.md, pr-size.md и др., если существуют)
+- `$HOME/.claude/CLAUDE.md` — глобальные правила в свободной форме (секции «Жёсткие правила», «Автоматические триггеры»).
+- `<project_root>/CLAUDE.md` и `<project_root>/.claude/CLAUDE.md` — правила текущего проекта, если существуют.
+
+Новые правила создавать в `<project_root>/.claude/rules/` (проектные). Глобальные привычки уровня поведения — предлагать в `$HOME/.claude/CLAUDE.md`.
 
 ## Фаза 1 — Инвентаризация (детерминированный сбор)
 
-1. Glob всех `SKILL.md` в обеих папках скиллов (глобальной и `shared_claude\skills\`).
-2. Read всех файлов правил + обоих CLAUDE.md.
+1. Glob всех `SKILL.md` в обеих папках скиллов (`$HOME/.claude/skills/` и `<project_root>/.claude/skills/`).
+2. Read всех файлов правил + всех найденных CLAUDE.md.
 3. Выведи пользователю:
 
 ```
