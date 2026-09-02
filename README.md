@@ -10,7 +10,7 @@ claude-config/
 ├── sync.sh              # Синхронизация → ~/.claude/ (CLAUDE.md + skills/ + agents/)
 ├── README.md            # Этот файл
 ├── agents/              # Субагенты Claude Code (модель + effort в frontmatter)
-│   ├── architect.md     #   Fable 5 / xhigh — системная архитектура (ЕДИНСТВЕННАЯ точка Fable), read-only
+│   ├── architect.md     #   Fable 5.1 / xhigh — системная архитектура (ЕДИНСТВЕННАЯ точка Fable), read-only
 │   ├── researcher.md    #   Sonnet 5 / medium — исследование кодовой базы/веба, read-only
 │   └── mechanic.md      #   Haiku 4.5 / low — механика: grep/поиск/переименования/форматирование
 ├── hooks/               # Хуки Claude Code (НЕ синхронизируются — путь прописан в settings.json)
@@ -72,11 +72,11 @@ claude-config/
 
 Задачи распределяются по моделям автоматически. 📖 **Гайд для команды (как повторить у себя) — [`MODEL-ROUTING.md`](MODEL-ROUTING.md).** Полная карта «тип задачи → модель» — в `CLAUDE.md`, секция **«Роутинг моделей по задачам»**. Кратко:
 
-- **Две оси**: модель × **effort**. Глобальный effort — `high`; `xhigh` включать под кодинг и агентные задачи (`/effort xhigh`), не держать глобально.
-- **Субагенты** (`agents/`) несут модель и effort в frontmatter: `architect`=Fable 5/xhigh (только системная архитектура — единственная точка Fable), `researcher`=Sonnet 5/medium, `mechanic`=Haiku 4.5/low.
+- **Две оси**: модель × **effort**. Глобальный effort — `xhigh` (`effortLevel` в `~/.claude/settings.json`); безопасно, потому что у субагентов свой effort во frontmatter — механика и research на xhigh не идут.
+- **Субагенты** (`agents/`) несут модель и effort в frontmatter: `architect`=Fable 5.1/xhigh (только системная архитектура — единственная точка Fable; алиас `fable` резолвится в текущую версию), `researcher`=Sonnet 5/medium, `mechanic`=Haiku 4.5/low.
 - **Главный цикл** — Opus 5 по умолчанию; всё, чего нет в карте → Opus 5.
 - **Скиллы**: worker-скиллы низкой ставки пиннятся `model: sonnet` (docs, report, test, deep-research, dependency-optimizer, cicd-quick-setup, error-handling-standardizer, context-budget, skill-stocktake, research, api-contract-guardian); `review`→opus; `audit-server`→`claude-opus-4-8`; `fable-off/on`→haiku. Оркестраторы (`build`, `plan`, `spec-to-code`, `subagent-driven-development`, `dispatching-parallel-agents`) и дисциплины (`systematic-debugging`, TDD, verification, `task-status`) без пина — едут на дефолтном Opus 5. У `task-status` пин был бы вреден отдельно: `model` в скилле действует до конца turn'а, а сверка доказательств «сделано / не проверено» — не то место, где экономят.
-- **Классификаторы**: Opus 5 и Fable 5 несут cyber/bio-фильтры, харнесс сам делает content-fallback (Fable cyber→Opus 4.8, Fable bio→Opus 5, Opus 5 cyber→Opus 4.8). Фолбэк переводит всю сессию — на pentest/аудитах стартовать `/model claude-opus-4-8` заранее.
+- **Классификаторы**: Opus 5 и Fable 5.x несут cyber/bio-фильтры, харнесс сам делает content-fallback (Fable 5: cyber→Opus 4.8, bio→Opus 5; Opus 5: cyber→Opus 4.8; цели для Fable 5.1 не сверены, по косвенным признакам та же пара Fable→Opus 4.8). Фолбэк переводит всю сессию — на pentest/аудитах стартовать `/model claude-opus-4-8` заранее.
 - **Фолбэк Fable→Opus**: refusal ловит харнесс сам; `/fable-off` остаётся клапаном по недельной квоте (Fable capped 50% на Team Premium), возврат — `/fable-on`. Правят исходник `agents/architect.md` + запускают `sync.sh`.
 - **statusline** (опц.): показывает текущую модель сессии + режим architect + лимит 5h. Включить — прописать `statusLine` в `~/.claude/settings.json` (пример — в шапке `statusline/statusline.sh`).
 

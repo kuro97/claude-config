@@ -10,6 +10,6 @@ model: haiku
 Выполни:
 1. В файле `D:/claude/claude-config/agents/architect.md` замени строку frontmatter `model: opus` на `model: fable`. Если там уже `model: fable` — сообщи, что Fable уже активна, и остановись.
 2. Запусти синк: `bash D:/claude/claude-config/sync.sh`
-3. Подтверди пользователю: «architect вернулся на Fable.»
+3. Подтверди пользователю: «architect вернулся на Fable (алиас `fable` = текущая версия, сейчас Fable 5.1).»
 
 ВАЖНО: правим ИСХОДНИК в claude-config (не глобал ~/.claude).
