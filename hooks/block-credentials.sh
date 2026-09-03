@@ -74,10 +74,11 @@ esac
 # config.py / config.php — по имени не судить: почти везде это обычный модуль настроек
 # на os.getenv/env(), секреты в нём не лежат. Блокировать только если внутри реально
 # присвоен литеральный секрет (в PHP-проектах пароль в Config.php — обычное дело).
+# Ключ может стоять в кавычках: "db_password" => "…" (PHP-массивы, dict в Python).
 case "$lower" in
   *config.php|*config.py)
     [ -f "$path" ] || exit 0   # нового файла ещё нет — проверять нечего
-    if grep -qiE '(pass(w(or)?d)?|secret|token|api_?key|[^a-z_]key|dsn)[[:space:]]*(=|=>|:)[[:space:]]*["'"'"'][^"'"'"']{12,}' "$path"; then
+    if grep -qiE '(pass(w(or)?d)?|secret|token|api_?key|[^a-z_]key|dsn)["'"'"']?[[:space:]]*(=|=>|:)[[:space:]]*["'"'"'][^"'"'"']{12,}' "$path"; then
       echo "BLOCKED: $path — внутри литеральный секрет, правка запрещена (правило в CLAUDE.md)." >&2
       echo "Если правка действительно нужна — сделай её сам, руками." >&2
       exit 2
